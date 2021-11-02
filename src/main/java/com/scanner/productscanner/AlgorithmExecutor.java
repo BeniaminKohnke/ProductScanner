@@ -4,10 +4,10 @@ import java.util.*;
 
 public class AlgorithmExecutor {
     public enum AlgorithmMode{
-        NONE, SCAN, SEARCH_FOR_EXAMPLES
+        SCAN, SEARCH_FOR_EXAMPLES
     }
 
-    public AlgorithmMode algorithmMode = AlgorithmMode.NONE;
+    public AlgorithmMode algorithmMode;
     private final List<Scanner> scanners = new ArrayList<>();
 
     public AlgorithmExecutor() {
@@ -21,9 +21,6 @@ public class AlgorithmExecutor {
         }
         if(algorithmMode.equals(AlgorithmMode.SEARCH_FOR_EXAMPLES)){
             searchForExamples();
-        }
-        if(algorithmMode.equals(AlgorithmMode.NONE)){
-            Log.log(getClass().getName(), "Algorithm is not set", Log.LogLevel.WARN);
         }
     }
 

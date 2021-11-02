@@ -6,7 +6,7 @@
     </head>
     <body>
         <h1><%= "SKANER PRODUKTÓW" %></h1>
-    <button formmethod="post" name="Prospector">SZUKAJ PRODUKTÓW</button>
-    <button formmethod="post" name="Scanner">SKANUJ PRODUKTY</button>
+    <button formmethod="get" name="Prospector">SZUKAJ PRODUKTÓW</button>
+    <button formmethod="get" name="Scanner">SKANUJ PRODUKTY</button>
     </body>
 </html>
