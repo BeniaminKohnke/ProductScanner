@@ -11,7 +11,9 @@ public class MainServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String x = request.getHeader("Prospector");
 
+        System.out.println(x);
     }
 
     public void destroy() {

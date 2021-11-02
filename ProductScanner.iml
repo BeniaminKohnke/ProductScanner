@@ -38,5 +38,6 @@
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.14.3" level="project" />
     <orderEntry type="library" name="Maven: us.codecraft:xsoup:0.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.assertj:assertj-core:3.9.1" level="project" />
+    <orderEntry type="library" name="jquery" level="application" />
   </component>
 </module>
