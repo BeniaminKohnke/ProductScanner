@@ -15,7 +15,7 @@ public class AlgorithmExecutor {
         scanners.add(new EpicGamesScanner());
     }
 
-    public void Execute() {
+    public void execute() {
         if(algorithmMode.equals(AlgorithmMode.SCAN)){
             scan();
         }
