@@ -15,6 +15,15 @@
         </sourceRoots>
       </configuration>
     </facet>
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <datasource-mapping>
+          <factory-entry name="ProductScanner" />
+        </datasource-mapping>
+        <naming-strategy-map />
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
@@ -28,6 +37,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="jquery-ui" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:4.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.2.0" level="project" />
@@ -38,6 +49,5 @@
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.14.3" level="project" />
     <orderEntry type="library" name="Maven: us.codecraft:xsoup:0.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.assertj:assertj-core:3.9.1" level="project" />
-    <orderEntry type="library" name="jquery" level="application" />
   </component>
 </module>

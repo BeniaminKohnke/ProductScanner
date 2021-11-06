@@ -2,7 +2,7 @@ package com.scanner.productscanner;
 
 import java.util.ArrayList;
 
-public class Log extends Thread {
+public class Log {
     private static ArrayList<String> loggerQueue = new ArrayList<>();
 
     public enum LogLevel{
@@ -13,19 +13,12 @@ public class Log extends Thread {
         loggerQueue.add(level.name() + " -> " + callerName + " -> " + message);
     }
 
-    @Override
-    public void run() {
-        while (true){
-            String message = "";
-            synchronized(loggerQueue){
-                if(!loggerQueue.isEmpty()){
-                    message = loggerQueue.get(0);
-                    loggerQueue.remove(0);
-                }
-            }
-            if(!message.isEmpty()){
-                System.out.println(message);
-            }
+    public static String getSingleMessage(){
+        String message = null;
+        if(!loggerQueue.isEmpty()){
+            message = loggerQueue.get(0);
+            loggerQueue.remove(0);
         }
+        return message;
     }
 }

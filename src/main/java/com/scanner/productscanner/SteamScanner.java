@@ -17,14 +17,12 @@ public class SteamScanner extends Scanner {
             Xsoup.compile("//div[@class='game_area_purchase_game']//div[@class='discount_final_price']/text()");
     private final XPathEvaluator descriptionXPath =
             Xsoup.compile("//*[@id='game_area_description']/text()");
-    private final ArrayList<XPathEvaluator> examplesXPaths = new ArrayList<>();
+    private final ArrayList<XPathEvaluator> urlXPaths = new ArrayList<>();
 
     public SteamScanner(){
         super("Steam");
-        //examples.add("https://store.steampowered.com/app/1063730/New_World/");
-        //examples.add("https://store.steampowered.com/app/221100/DayZ/");
         for(int i=1; i<=15; i++){
-            examplesXPaths.add(Xsoup.compile("//*[@id='TopSellersRows']/a[" + i + "]/@href"));
+            urlXPaths.add(Xsoup.compile("//*[@id='TopSellersRows']/a[" + i + "]/@href"));
         }
     }
 
@@ -67,13 +65,13 @@ public class SteamScanner extends Scanner {
     }
 
     @Override
-    public void getExamples() {
+    public void getProductsURLs() {
         Document previousDocument = null;
         for(int i=0; i < Scanner.PAGES_TO_SCAN; i++){
             Document document = DataAccess.downloadHTMLDocument("https://store.steampowered.com/specials#p=" + i + "&tab=TopSellers");
             if(previousDocument != null){
-                String previousValue = examplesXPaths.get(0).evaluate(previousDocument).get();
-                String currentValue = examplesXPaths.get(0).evaluate(document).get();
+                String previousValue = urlXPaths.get(0).evaluate(previousDocument).get();
+                String currentValue = urlXPaths.get(0).evaluate(document).get();
                 while(previousValue.equals(currentValue)){
                     try {
                         Thread.sleep(60000);
@@ -81,16 +79,15 @@ public class SteamScanner extends Scanner {
                         e.printStackTrace();
                     }
                     document = DataAccess.downloadHTMLDocument("https://store.steampowered.com/specials#p=" + i + "&tab=TopSellers");
-                    currentValue = examplesXPaths.get(0).evaluate(document).get();
+                    currentValue = urlXPaths.get(0).evaluate(document).get();
                 }
             }
             previousDocument = document;
-
-            for(int j=1; j <= examplesXPaths.size(); j++){
-                String example = examplesXPaths.get(j - 1).evaluate(document).get();
-                if(!example.contains("/sub/")){
-                    examples.add(example);
-                    Log.log(getClass().getName(), "New url -> " + example, Log.LogLevel.INFO);
+            for(int j = 1; j <= urlXPaths.size(); j++){
+                String url = urlXPaths.get(j - 1).evaluate(document).get();
+                if(!url.contains("/sub/")){
+                    productsURLs.add(url);
+                    Log.log(getClass().getName(), "New url -> " + url, Log.LogLevel.INFO);
                 }
             }
         }
