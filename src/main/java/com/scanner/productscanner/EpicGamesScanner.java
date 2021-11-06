@@ -21,15 +21,12 @@ public class EpicGamesScanner extends Scanner{
             Xsoup.compile("//div[@data-component='SpecificationsLayout']//li[1]//span[@data-component='Text']/text()");
     private final XPathEvaluator textLanguageXPath =
             Xsoup.compile("//div[@data-component='SpecificationsLayout']//li[2]//span[@data-component='Text']/text()");
-    private final ArrayList<XPathEvaluator> examplesXPaths = new ArrayList<>();
-
-    //data-component="PDPDiscountedFromPrice"
+    private final ArrayList<XPathEvaluator> urlsXPaths = new ArrayList<>();
 
     EpicGamesScanner(){
         super("Epic Games Store");
-        //examples.add("https://www.epicgames.com/store/pl/p/god-of-war");
         for(int i=1; i<=40; i++){
-            examplesXPaths.add(Xsoup.compile("//section[@data-component='BrowseGrid']//li[" + i + "]//a[@role='link']/@href"));
+            urlsXPaths.add(Xsoup.compile("//section[@data-component='BrowseGrid']//li[" + i + "]//a[@role='link']/@href"));
         }
     }
 
@@ -49,13 +46,13 @@ public class EpicGamesScanner extends Scanner{
     }
 
     @Override
-    public void getExamples() {
+    public void getProductsURLs() {
         Document previousDocument = null;
         for(int i=0; i < Scanner.PAGES_TO_SCAN; i++){
             Document document = DataAccess.downloadHTMLDocument("https://www.epicgames.com/store/pl/browse?sortBy=title&sortDir=ASC&priceTier=tierDiscouted&count=40&start=" + i);
             if(previousDocument != null){
-                String previousValue = examplesXPaths.get(0).evaluate(previousDocument).get();
-                String currentValue = examplesXPaths.get(0).evaluate(document).get();
+                String previousValue = urlsXPaths.get(0).evaluate(previousDocument).get();
+                String currentValue = urlsXPaths.get(0).evaluate(document).get();
                 while(previousValue.equals(currentValue)){
                     try {
                         Thread.sleep(60000);
@@ -63,17 +60,19 @@ public class EpicGamesScanner extends Scanner{
                         e.printStackTrace();
                     }
                     document = DataAccess.downloadHTMLDocument("https://www.epicgames.com/store/pl/browse?sortBy=title&sortDir=ASC&priceTier=tierDiscouted&count=40&start=" + i);
-                    currentValue = examplesXPaths.get(0).evaluate(document).get();
+                    currentValue = urlsXPaths.get(0).evaluate(document).get();
                 }
             }
             previousDocument = document;
 
-            for(int j=1; j <= examplesXPaths.size(); j++){
-                String example = examplesXPaths.get(j - 1).evaluate(document).get();
-                if(example != null) {
-                    example = "https://www.epicgames.com" + example;
-                    examples.add(example);
-                    Log.log(getClass().getName(), "New url -> " + example, Log.LogLevel.INFO);
+            if(document != null){
+                for(int j = 1; j <= urlsXPaths.size(); j++){
+                    String url = urlsXPaths.get(j - 1).evaluate(document).get();
+                    if(url != null) {
+                        url = "https://www.epicgames.com" + url;
+                        productsURLs.add(url);
+                        Log.log(getClass().getName(), "New url -> " + url, Log.LogLevel.INFO);
+                    }
                 }
             }
         }

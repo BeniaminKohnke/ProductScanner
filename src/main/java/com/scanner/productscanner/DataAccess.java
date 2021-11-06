@@ -10,22 +10,23 @@ import java.nio.charset.StandardCharsets;
 
 public class DataAccess {
     public static void saveOrUpdateProductData(Product product){
-        //if p.name LIKE name && p.shopId = id then get product and update data
+        //if p.name LIKE name && p.shopName = shopName then get product and update data
         //else add product to table
+        Log.log(AlgorithmExecutor.class.getName(), "New product -> " + product, Log.LogLevel.INFO);
     }
 
     public static Document downloadHTMLDocument(String url) {
-        Document doc = null;
+        Document document = null;
         try {
             Jsoup.newSession();
-            doc = Jsoup.parse(new URL(url), 60000);
-            doc.outputSettings()
+            document = Jsoup.parse(new URL(url), 60000);
+            document.outputSettings()
                     .escapeMode(Entities.EscapeMode.xhtml)
                     .syntax(Document.OutputSettings.Syntax.html)
                     .charset(StandardCharsets.UTF_8);
         } catch (IOException e) {
             Log.log(DataAccess.class.getName(), e.getMessage(), Log.LogLevel.ERROR);
         }
-        return doc;
+        return document;
     }
 }

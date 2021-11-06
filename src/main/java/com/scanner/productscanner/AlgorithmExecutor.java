@@ -1,57 +1,60 @@
 package com.scanner.productscanner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class AlgorithmExecutor {
-    public enum AlgorithmMode{
-        SCAN, SEARCH_FOR_EXAMPLES
+    private static final List<Scanner> SCANNERS;
+    private static boolean LOCK;
+
+    static  {
+        SCANNERS = new ArrayList<>();
+        SCANNERS.add(new SteamScanner());
+        SCANNERS.add(new EpicGamesScanner());
+        LOCK = false;
     }
 
-    public AlgorithmMode algorithmMode;
-    private final List<Scanner> scanners = new ArrayList<>();
+    public static void scan(){
+        if(!LOCK){
+            LOCK = true;
+            Log.log(AlgorithmExecutor.class.getName(), "Algorithm started scanning webpages for products' data", Log.LogLevel.INFO);
+            long lastScan = new Date().getTime();
+            for (Scanner scanner : SCANNERS) {
+                for (String productURL : scanner.productsURLs) {
+                    Product product = scanner
+                            .processHTMLDocument(DataAccess
+                                    .downloadHTMLDocument(productURL));
 
-    public AlgorithmExecutor() {
-        scanners.add(new SteamScanner());
-        scanners.add(new EpicGamesScanner());
-    }
-
-    public void execute() {
-        if(algorithmMode.equals(AlgorithmMode.SCAN)){
-            scan();
-        }
-        if(algorithmMode.equals(AlgorithmMode.SEARCH_FOR_EXAMPLES)){
-            searchForExamples();
-        }
-    }
-
-    private void scan(){
-        Log.log(getClass().getName(), "Algorithm started scanning webpages for products' data", Log.LogLevel.INFO);
-        long lastScan = new Date().getTime();
-        for (Scanner scanner : scanners) {
-            for (String example : scanner.examples) {
-                Product product = scanner
-                        .processHTMLDocument(DataAccess
-                                .downloadHTMLDocument(example));
-
-                if(product != null){
-                    product.url = example;
-                    product.lastScanDate = lastScan;
-                    System.out.println(product);
-                    DataAccess.saveOrUpdateProductData(product);
+                    if(product != null){
+                        product.url = productURL;
+                        product.lastScanDate = lastScan;
+                        DataAccess.saveOrUpdateProductData(product);
+                    }
+                    else {
+                        Log.log(AlgorithmExecutor.class.getName(), "Product's data was not extracted -> " + productURL, Log.LogLevel.WARN);
+                    }
                 }
-                else {
-                    Log.log(getClass().getName(), "Product's data was not extracted -> " + example, Log.LogLevel.WARN);
-                }
+                scanner.productsURLs = new ArrayList<>();
             }
+            Log.log(AlgorithmExecutor.class.getName(), "Algorithm finished scanning webpages for products' data", Log.LogLevel.INFO);
+            LOCK = false;
+        }else{
+            Log.log(AlgorithmExecutor.class.getName(), "Other action is being executed", Log.LogLevel.WARN);
         }
-        Log.log(getClass().getName(), "Algorithm finished scanning webpages for products' data", Log.LogLevel.INFO);
     }
 
-    private void searchForExamples(){
-        Log.log(getClass().getName(), "Algorithm started scanning webpages for products", Log.LogLevel.INFO);
-        for (Scanner scanner : scanners) {
-            scanner.getExamples();
+    public static void searchForProducts(){
+        if(!LOCK) {
+            LOCK = true;
+            Log.log(AlgorithmExecutor.class.getName(), "Algorithm started scanning webpages for products", Log.LogLevel.INFO);
+            for (Scanner scanner : SCANNERS) {
+                scanner.getProductsURLs();
+            }
+            Log.log(AlgorithmExecutor.class.getName(), "Algorithm finished scanning webpages for products", Log.LogLevel.INFO);
+            LOCK = false;
+        }else{
+            Log.log(AlgorithmExecutor.class.getName(), "Other action is being executed", Log.LogLevel.WARN);
         }
-        Log.log(getClass().getName(), "Algorithm finished scanning webpages for products", Log.LogLevel.INFO);
     }
 }
