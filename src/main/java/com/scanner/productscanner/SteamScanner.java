@@ -87,7 +87,7 @@ public class SteamScanner extends Scanner {
                 String url = urlXPaths.get(j - 1).evaluate(document).get();
                 if(!url.contains("/sub/")){
                     productsURLs.add(url);
-                    Log.log(getClass().getName(), "New url -> " + url, Log.LogLevel.INFO);
+                    Logger.log(getClass().getName(), "New url -> " + url, Logger.LogLevel.INFO);
                 }
             }
         }

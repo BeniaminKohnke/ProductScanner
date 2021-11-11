@@ -71,7 +71,7 @@ public class EpicGamesScanner extends Scanner{
                     if(url != null) {
                         url = "https://www.epicgames.com" + url;
                         productsURLs.add(url);
-                        Log.log(getClass().getName(), "New url -> " + url, Log.LogLevel.INFO);
+                        Logger.log(getClass().getName(), "New url -> " + url, Logger.LogLevel.INFO);
                     }
                 }
             }
