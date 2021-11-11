@@ -2,7 +2,7 @@ package com.scanner.productscanner;
 
 import java.util.ArrayList;
 
-public class Log {
+public class Logger {
     private static ArrayList<String> loggerQueue = new ArrayList<>();
 
     public enum LogLevel{
@@ -16,9 +16,22 @@ public class Log {
     public static String getSingleMessage(){
         String message = null;
         if(!loggerQueue.isEmpty()){
-            message = loggerQueue.get(0);
-            loggerQueue.remove(0);
+            synchronized (loggerQueue){
+                message = loggerQueue.get(0);
+                loggerQueue.remove(0);
+            }
         }
         return message;
+    }
+
+    public static ArrayList<String> getEveryMessage(){
+        ArrayList<String> messages = null;
+        if(!loggerQueue.isEmpty()){
+            synchronized (loggerQueue){
+                messages = new ArrayList<>(loggerQueue);
+                loggerQueue.clear();
+            }
+        }
+        return messages;
     }
 }

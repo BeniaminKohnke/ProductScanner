@@ -1,6 +1,7 @@
 package com.scanner.productscanner;
 
 import java.io.*;
+import java.util.ArrayList;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
@@ -12,14 +13,36 @@ public class AjaxServlet extends HttpServlet {
             value = "";
         }
         response.setContentType("text/plain");
-        if(value.equals("search")){
-            new Thread(AlgorithmExecutor::searchForProducts).start();
-            response.getWriter().write("SEARCHING");
-        }else if(value.equals("scan")){
-            new Thread(AlgorithmExecutor::scan).start();
-            response.getWriter().write("SCANNING");
-        }else if(value.equals("log")){
-            response.getWriter().write(Log.getSingleMessage());
+        switch (value) {
+            case "search": {
+                String message = AlgorithmExecutor.LOCK ? "-" : "SEARCHING";
+                new Thread(AlgorithmExecutor::searchForProducts).start();
+                response.getWriter().write(message);
+                break;
+            }
+            case "scan": {
+                String message = AlgorithmExecutor.LOCK ? "-" : "SCANNING";
+                new Thread(AlgorithmExecutor::scan).start();
+                response.getWriter().write(message);
+                break;
+            }
+            case "log":{
+                //response.getWriter().write(Logger.getSingleMessage());
+
+                String message = "-";
+                ArrayList<String> messages = Logger.getEveryMessage();
+                if(messages != null){
+                    StringBuilder builder = new StringBuilder();
+                    for (String m : messages) {
+                        builder.append(m);
+                        builder.append("|");
+                    }
+                    builder.deleteCharAt(builder.length() - 1);
+                    message = builder.toString();
+                }
+                response.getWriter().write(message);
+                break;
+            }
         }
     }
 }
