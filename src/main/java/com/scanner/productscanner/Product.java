@@ -8,12 +8,12 @@ public class Product {
     public String languages = "";
     public String url = "";
     public String shopName = "";
-    public long lastScanDate = -1;
+    public String lastScanDate = "";
 
     @Override
     public String toString() {
         return "Product{" +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", mainPrice='" + mainPrice + '\'' +
                 ", discountPrice='" + discountPrice + '\'' +
                 ", description='" + description + '\'' +

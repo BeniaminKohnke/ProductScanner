@@ -6,7 +6,7 @@ public class Logger {
     private static ArrayList<String> loggerQueue = new ArrayList<>();
 
     public enum LogLevel{
-        INFO, WARN, ERROR,
+        NONE, INFO, WARN, ERROR,
     }
 
     public static void log(String callerName, String message, LogLevel level){

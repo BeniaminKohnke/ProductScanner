@@ -1,15 +1,16 @@
 package com.scanner.productscanner;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class AlgorithmExecutor {
-    private static final List<Scanner> SCANNERS;
+    public static final String[] Months = new String[]{"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+
+    private static final ArrayList<Scanner> SCANNERS = new ArrayList<>();
     public static boolean LOCK;
 
-    static  {
-        SCANNERS = new ArrayList<>();
+    static {
         SCANNERS.add(new SteamScanner());
         SCANNERS.add(new EpicGamesScanner());
         LOCK = false;
@@ -18,8 +19,12 @@ public class AlgorithmExecutor {
     public static void scan(){
         if(!LOCK){
             LOCK = true;
+            DataAccess.getExistingProducts();
+
             Logger.log(AlgorithmExecutor.class.getName(), "Algorithm started scanning webpages for products' data", Logger.LogLevel.INFO);
-            long lastScan = new Date().getTime();
+            String lastScan = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+            String[] split = lastScan.split("-");
+            lastScan = split[0] + "-" + Months[Integer.parseInt(split[1]) - 1] + "-" + split[2];
             for (Scanner scanner : SCANNERS) {
                 for (String productURL : scanner.productsURLs) {
                     Product product = scanner
