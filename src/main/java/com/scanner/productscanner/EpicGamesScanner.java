@@ -24,8 +24,8 @@ public class EpicGamesScanner extends Scanner{
     private final ArrayList<XPathEvaluator> urlsXPaths = new ArrayList<>();
 
     EpicGamesScanner(){
-        super("Epic Games Store");
-        for(int i=1; i<=40; i++){
+        super("epicgames");
+        for(int i=1; i<=500; i++){
             urlsXPaths.add(Xsoup.compile("//section[@data-component='BrowseGrid']//li[" + i + "]//a[@role='link']/@href"));
         }
     }
@@ -47,32 +47,14 @@ public class EpicGamesScanner extends Scanner{
 
     @Override
     public void getProductsURLs() {
-        Document previousDocument = null;
-        for(int i=0; i < Scanner.PAGES_TO_SCAN; i++){
-            Document document = DataAccess.downloadHTMLDocument("https://www.epicgames.com/store/pl/browse?sortBy=title&sortDir=ASC&priceTier=tierDiscouted&count=40&start=" + i);
-            if(previousDocument != null){
-                String previousValue = urlsXPaths.get(0).evaluate(previousDocument).get();
-                String currentValue = urlsXPaths.get(0).evaluate(document).get();
-                while(previousValue.equals(currentValue)){
-                    try {
-                        Thread.sleep(60000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    document = DataAccess.downloadHTMLDocument("https://www.epicgames.com/store/pl/browse?sortBy=title&sortDir=ASC&priceTier=tierDiscouted&count=40&start=" + i);
-                    currentValue = urlsXPaths.get(0).evaluate(document).get();
-                }
-            }
-            previousDocument = document;
-
-            if(document != null){
-                for(int j = 1; j <= urlsXPaths.size(); j++){
-                    String url = urlsXPaths.get(j - 1).evaluate(document).get();
-                    if(url != null) {
-                        url = "https://www.epicgames.com" + url;
-                        productsURLs.add(url);
-                        Logger.log(getClass().getName(), "New url -> " + url, Logger.LogLevel.NONE);
-                    }
+        Document document = DataAccess.downloadHTMLDocument("https://www.epicgames.com/store/pl/browse?sortBy=releaseDate&sortDir=DESC&priceTier=tierDiscouted&count=500&start=0");
+        if(document != null){
+            for(int i = 1; i <= urlsXPaths.size(); i++){
+                String url = urlsXPaths.get(i - 1).evaluate(document).get();
+                if(url != null) {
+                    url = "https://www.epicgames.com" + url;
+                    productsURLs.add(url);
+                    Logger.log(getClass().getName(), "New url -> " + url, Logger.LogLevel.NONE);
                 }
             }
         }

@@ -27,8 +27,6 @@ public class AjaxServlet extends HttpServlet {
                 break;
             }
             case "log":{
-                //response.getWriter().write(Logger.getSingleMessage());
-
                 String message = "-";
                 ArrayList<String> messages = Logger.getEveryMessage();
                 if(messages != null){
