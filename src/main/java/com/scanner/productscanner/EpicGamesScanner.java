@@ -23,9 +23,9 @@ public class EpicGamesScanner extends Scanner{
             Xsoup.compile("//div[@data-component='SpecificationsLayout']//li[2]//span[@data-component='Text']/text()");
     private final ArrayList<XPathEvaluator> urlsXPaths = new ArrayList<>();
 
-    EpicGamesScanner(){
+    public EpicGamesScanner(){
         super("epicgames");
-        for(int i=1; i<=500; i++){
+        for(int i=1; i<=50; i++){
             urlsXPaths.add(Xsoup.compile("//section[@data-component='BrowseGrid']//li[" + i + "]//a[@role='link']/@href"));
         }
     }
@@ -47,7 +47,7 @@ public class EpicGamesScanner extends Scanner{
 
     @Override
     public void getProductsURLs() {
-        Document document = DataAccess.downloadHTMLDocument("https://www.epicgames.com/store/pl/browse?sortBy=releaseDate&sortDir=DESC&priceTier=tierDiscouted&count=500&start=0");
+        Document document = DataAccess.downloadHTMLDocument("https://www.epicgames.com/store/pl/browse?sortBy=releaseDate&sortDir=DESC&priceTier=tierDiscouted&count=50&start=0");
         if(document != null){
             for(int i = 1; i <= urlsXPaths.size(); i++){
                 String url = urlsXPaths.get(i - 1).evaluate(document).get();

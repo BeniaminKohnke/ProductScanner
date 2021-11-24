@@ -1,9 +1,9 @@
 import com.scanner.productscanner.DataAccess;
-import com.scanner.productscanner.SteamScanner;
+import com.scanner.productscanner.EpicGamesScanner;
 import org.junit.jupiter.api.Test;
 
-public class SteamScannerTest {
-    SteamScanner scanner = new SteamScanner();
+public class EpicGamesScannerTest {
+    EpicGamesScanner scanner = new EpicGamesScanner();
 
     @Test
     public void getProductsURLsTest(){
