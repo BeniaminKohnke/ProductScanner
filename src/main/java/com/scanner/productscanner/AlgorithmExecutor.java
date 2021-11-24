@@ -17,11 +17,9 @@ public class AlgorithmExecutor {
     }
 
     public static void scan(){
-        DataAccess.getExistingProducts();
         if(!LOCK){
             LOCK = true;
             DataAccess.getExistingProducts();
-
             Logger.log(AlgorithmExecutor.class.getName(), "Algorithm started scanning webpages for products' data", Logger.LogLevel.INFO);
             String lastScan = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
             String[] split = lastScan.split("-");

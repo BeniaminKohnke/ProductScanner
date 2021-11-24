@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 public class DataAccess {
     public static ArrayList<String> existingURLs;
-
     public static void getExistingProducts(){
         existingURLs = new ArrayList<>();
         Connection sqlConnection = null;
@@ -57,7 +56,7 @@ public class DataAccess {
             try {
                 String sql;
                 if(!existingURLs.contains(product.url)){
-                    sql = "INSERT INTO [SCANNER].[dbo].[" + product.shopName + "_product] (name, url, last_scan, main_price, discount_price, languages, description) VALUES ("
+                    sql = "INSERT INTO [SCANNER].[dbo].[" + product.shopName + "_products] (name, url, last_scan, main_price, discount_price, languages, description) VALUES ("
                             + String.format("'%s', '%s', '%s', '%s', '%s', '%s', '%s'",
                             product.name,
                             product.url,
@@ -69,7 +68,7 @@ public class DataAccess {
                     sqlConnection.createStatement().execute(sql);
                     Logger.log(AlgorithmExecutor.class.getName(), "New product -> " + product.name, Logger.LogLevel.NONE);
                 }else{
-                    sql = "UPDATE [SCANNER].[dbo].[steam_products] SET "
+                    sql = "UPDATE [SCANNER].[dbo].[" + product.shopName + "_products] SET "
                             + String.format("name = '%s', last_scan = '%s', main_price = '%s', discount_price = '%s', languages = '%s', description = '%s'",
                             product.name,
                             product.lastScanDate,
@@ -78,9 +77,9 @@ public class DataAccess {
                             product.languages,
                             product.description)
                             + "WHERE url LIKE '" + product.url + "';";
+                    sqlConnection.createStatement().execute(sql);
+                    Logger.log(AlgorithmExecutor.class.getName(), "Updated product -> " + product.name, Logger.LogLevel.NONE);
                 }
-                sqlConnection.createStatement().execute(sql);
-                Logger.log(AlgorithmExecutor.class.getName(), "Updated product -> " + product.name, Logger.LogLevel.NONE);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
