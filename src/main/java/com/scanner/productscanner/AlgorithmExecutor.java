@@ -17,6 +17,7 @@ public class AlgorithmExecutor {
     }
 
     public static void scan(){
+        DataAccess.getExistingProducts();
         if(!LOCK){
             LOCK = true;
             DataAccess.getExistingProducts();

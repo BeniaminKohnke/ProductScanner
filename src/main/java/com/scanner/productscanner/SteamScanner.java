@@ -17,13 +17,11 @@ public class SteamScanner extends Scanner {
             Xsoup.compile("//div[@class='game_area_purchase_game']//div[@class='discount_final_price']/text()");
     private final XPathEvaluator descriptionXPath =
             Xsoup.compile("//*[@id='game_area_description']/text()");
-    private final ArrayList<XPathEvaluator> urlXPaths = new ArrayList<>();
+    private final XPathEvaluator urlXPath =
+            Xsoup.compile("//div[@id='search_result_container']//div[@id='search_resultsRows']//a/@href");
 
     public SteamScanner(){
-        super("Steam");
-        for(int i=1; i<=15; i++){
-            urlXPaths.add(Xsoup.compile("//*[@id='TopSellersRows']/a[" + i + "]/@href"));
-        }
+        super("steam");
     }
 
     @Override
@@ -66,30 +64,10 @@ public class SteamScanner extends Scanner {
 
     @Override
     public void getProductsURLs() {
-        Document previousDocument = null;
-        for(int i=0; i < Scanner.PAGES_TO_SCAN; i++){
-            Document document = DataAccess.downloadHTMLDocument("https://store.steampowered.com/specials#p=" + i + "&tab=TopSellers");
-            if(previousDocument != null){
-                String previousValue = urlXPaths.get(0).evaluate(previousDocument).get();
-                String currentValue = urlXPaths.get(0).evaluate(document).get();
-                while(previousValue.equals(currentValue)){
-                    try {
-                        Thread.sleep(60000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    document = DataAccess.downloadHTMLDocument("https://store.steampowered.com/specials#p=" + i + "&tab=TopSellers");
-                    currentValue = urlXPaths.get(0).evaluate(document).get();
-                }
-            }
-            previousDocument = document;
-            for(int j = 1; j <= urlXPaths.size(); j++){
-                String url = urlXPaths.get(j - 1).evaluate(document).get();
-                if(!url.contains("/sub/")){
-                    productsURLs.add(url);
-                    Logger.log(getClass().getName(), "New url -> " + url, Logger.LogLevel.NONE);
-                }
-            }
+        Document document = DataAccess.downloadHTMLDocument("https://store.steampowered.com/search/?specials=1");
+        productsURLs = (ArrayList<String>) urlXPath.evaluate(document).list();
+        for (String url : productsURLs) {
+            Logger.log(getClass().getName(), "New url -> " + url, Logger.LogLevel.NONE);
         }
     }
 }

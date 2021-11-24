@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DataAccessTest {
-
     @Test
     public void getUrlFormDBTest(){
         DataAccess.getExistingProducts();
