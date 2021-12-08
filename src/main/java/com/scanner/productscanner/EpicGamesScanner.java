@@ -21,10 +21,12 @@ public class EpicGamesScanner extends Scanner{
             Xsoup.compile("//div[@data-component='SpecificationsLayout']//li[1]//span[@data-component='Text']/text()");
     private final XPathEvaluator textLanguageXPath =
             Xsoup.compile("//div[@data-component='SpecificationsLayout']//li[2]//span[@data-component='Text']/text()");
+    private final XPathEvaluator imageXPath =
+            Xsoup.compile("//div[@data-component='PDPSidebarLogo']//div[@data-component='Picture']//img/@src");
     private final ArrayList<XPathEvaluator> urlsXPaths = new ArrayList<>();
 
     public EpicGamesScanner(){
-        super("epicgames");
+        super("epicGames");
         for(int i=1; i<=50; i++){
             urlsXPaths.add(Xsoup.compile("//section[@data-component='BrowseGrid']//li[" + i + "]//a[@role='link']/@href"));
         }
@@ -36,12 +38,40 @@ public class EpicGamesScanner extends Scanner{
         product.shopName = shopName;
         product.name = nameXPath.evaluate(htmlDocument).get();
         product.description = descriptionXPath.evaluate(htmlDocument).get();
+        if(product.description == null) {
+            product.description = "";
+        }
+
         product.mainPrice = priceXPath.evaluate(htmlDocument).get();
         if(product.mainPrice == null || product.mainPrice.isEmpty()){
             product.mainPrice = discountOriginalPriceXPath.evaluate(htmlDocument).get();
             product.discountPrice = discountPriceXPath.evaluate(htmlDocument).get();
+            if(product.mainPrice == null){
+                return null;
+            }
         }
-        product.languages = audioLanguageXPath.evaluate(htmlDocument).get() + "\n" + textLanguageXPath.evaluate(htmlDocument).get();
+        if(product.discountPrice == null){
+            product.discountPrice = "";
+        }
+
+        product.imageUrl = imageXPath.evaluate(htmlDocument).get();
+        if(product.imageUrl == null){
+            product.imageUrl = "";
+        }
+
+        String audio = audioLanguageXPath.evaluate(htmlDocument).get();
+        String text = textLanguageXPath.evaluate(htmlDocument).get();
+        if(audio != null || text != null) {
+            if(audio != null){
+                product.languages = audio;
+            }
+            if(text != null){
+                product.languages += " " + text;
+                product.languages = product.languages.trim();
+            }
+        } else {
+            product.languages = "";
+        }
         return product.name != null && !product.name.isEmpty() ? product : null;
     }
 
@@ -54,9 +84,11 @@ public class EpicGamesScanner extends Scanner{
                 if(url != null) {
                     url = "https://www.epicgames.com" + url;
                     productsURLs.add(url);
-                    Logger.log(getClass().getName(), "New url -> " + url, Logger.LogLevel.NONE);
+                    Logger.log(getClass().getName(), "New url -> " + shopName + " -> " + url, Logger.LogLevel.NONE);
                 }
             }
+        } else {
+            Logger.log(getClass().getName(), "Could not download document", Logger.LogLevel.WARN);
         }
     }
 }

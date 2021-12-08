@@ -19,6 +19,8 @@ public class SteamScanner extends Scanner {
             Xsoup.compile("//*[@id='game_area_description']/text()");
     private final XPathEvaluator urlXPath =
             Xsoup.compile("//div[@id='search_result_container']//div[@id='search_resultsRows']//a/@href");
+    private final XPathEvaluator imageXPath =
+            Xsoup.compile("//div[@class='game_background_glow']//div[@class='responsive_page_header_img']//img/@src");
 
     public SteamScanner(){
         super("steam");
@@ -34,6 +36,17 @@ public class SteamScanner extends Scanner {
         if(product.mainPrice == null || product.mainPrice.isEmpty()){
             product.mainPrice = discountOriginalPriceXPath.evaluate(htmlDocument).get();
             product.discountPrice = discountPriceXPath.evaluate(htmlDocument).get();
+            if(product.mainPrice == null){
+                return null;
+            }
+        }
+        if(product.discountPrice == null){
+            product.discountPrice = "";
+        }
+
+        product.imageUrl = imageXPath.evaluate(htmlDocument).get();
+        if(product.imageUrl == null){
+            product.imageUrl = "";
         }
 
         ArrayList<String> languages = new ArrayList<>();
@@ -44,8 +57,7 @@ public class SteamScanner extends Scanner {
                     .get();
             if(text != null){
                 languages.add(text.trim());
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -65,9 +77,13 @@ public class SteamScanner extends Scanner {
     @Override
     public void getProductsURLs() {
         Document document = DataAccess.downloadHTMLDocument("https://store.steampowered.com/search/?specials=1");
-        productsURLs = (ArrayList<String>) urlXPath.evaluate(document).list();
-        for (String url : productsURLs) {
-            Logger.log(getClass().getName(), "New url -> " + url, Logger.LogLevel.NONE);
+        if(document != null){
+            productsURLs = (ArrayList<String>) urlXPath.evaluate(document).list();
+            for (String url : productsURLs) {
+                Logger.log(getClass().getName(), "New url -> " + shopName + " -> " + url, Logger.LogLevel.NONE);
+            }
+        } else {
+            Logger.log(getClass().getName(), "Could not download document", Logger.LogLevel.WARN);
         }
     }
 }

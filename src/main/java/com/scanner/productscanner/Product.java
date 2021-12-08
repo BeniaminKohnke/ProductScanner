@@ -7,20 +7,6 @@ public class Product {
     public String description = "";
     public String languages = "";
     public String url = "";
+    public String imageUrl = "";
     public String shopName = "";
-    public String lastScanDate = "";
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "name='" + name + '\'' +
-                ", mainPrice='" + mainPrice + '\'' +
-                ", discountPrice='" + discountPrice + '\'' +
-                ", description='" + description + '\'' +
-                ", languages='" + languages + '\'' +
-                ", url='" + url + '\'' +
-                ", shopName=" + shopName +
-                ", lastScanDate=" + lastScanDate +
-                '}';
-    }
 }
