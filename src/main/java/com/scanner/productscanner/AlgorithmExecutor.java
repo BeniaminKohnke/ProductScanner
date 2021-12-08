@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class AlgorithmExecutor {
-    public static final String[] Months = new String[]{"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
-
     private static final ArrayList<Scanner> SCANNERS = new ArrayList<>();
     public static boolean LOCK;
 
@@ -22,6 +20,21 @@ public class AlgorithmExecutor {
             DataAccess.getExistingProducts();
             Logger.log(AlgorithmExecutor.class.getName(), "Algorithm started scanning webpages for products' data", Logger.LogLevel.INFO);
             for (Scanner scanner : SCANNERS) {
+
+                //adding existing products to queue
+                for (String productURL : DataAccess.existingURLs.get(scanner.shopName)){
+                    boolean isInCollection = false;
+                    for (String url : scanner.productsURLs) {
+                        if(productURL.equals(url)){
+                            isInCollection = true;
+                            break;
+                        }
+                    }
+                    if(!isInCollection){
+                        scanner.productsURLs.add(productURL);
+                    }
+                }
+
                 for (String productURL : scanner.productsURLs) {
                     Product product = scanner
                             .processHTMLDocument(DataAccess

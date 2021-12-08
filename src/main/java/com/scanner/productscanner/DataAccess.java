@@ -11,10 +11,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DataAccess {
-    public static ArrayList<String> existingURLs;
+    public static HashMap<String, ArrayList<String>> existingURLs;
+
+    static {
+        existingURLs = new HashMap<>();
+        existingURLs.put("steam", new ArrayList<>());
+        existingURLs.put("epicGames", new ArrayList<>());
+    }
 
     public static void getExistingProducts(){
-        existingURLs = new ArrayList<>();
         Connection sqlConnection = null;
         try {
             sqlConnection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=SCANNER;", "sa", "JAVA123");
@@ -27,7 +32,7 @@ public class DataAccess {
                 Statement query = sqlConnection.createStatement();
                 ResultSet response = query.executeQuery(sql);
                 while(response.next()){
-                    existingURLs.add(response.getString("url"));
+                    existingURLs.get("steam").add(response.getString("url"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -37,7 +42,7 @@ public class DataAccess {
                 Statement query = sqlConnection.createStatement();
                 ResultSet response = query.executeQuery(sql);
                 while(response.next()){
-                    existingURLs.add(response.getString("url"));
+                    existingURLs.get("epicGames").add(response.getString("url"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -64,7 +69,7 @@ public class DataAccess {
             try {
                 String sql;
                 boolean containsUrl = false;
-                for(String url : existingURLs){
+                for(String url : existingURLs.get(product.shopName)){
                     if(url.equals(product.url)){
                         containsUrl = true;
                         break;
