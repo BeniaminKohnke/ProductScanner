@@ -7,7 +7,7 @@ public class DataAccessTest {
     public void getUrlFormDBTest(){
         DataAccess.getExistingProducts();
         if(DataAccess.existingURLs != null && !DataAccess.existingURLs.isEmpty()){
-            for (String url : DataAccess.existingURLs) {
+            for (String url : DataAccess.existingURLs.get("steam")) {
                 System.out.println(url);
             }
         }else{
