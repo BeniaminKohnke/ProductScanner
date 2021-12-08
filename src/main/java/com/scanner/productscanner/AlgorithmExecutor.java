@@ -21,9 +21,6 @@ public class AlgorithmExecutor {
             LOCK = true;
             DataAccess.getExistingProducts();
             Logger.log(AlgorithmExecutor.class.getName(), "Algorithm started scanning webpages for products' data", Logger.LogLevel.INFO);
-            String lastScan = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-            String[] split = lastScan.split("-");
-            lastScan = split[0] + "-" + Months[Integer.parseInt(split[1]) - 1] + "-" + split[2];
             for (Scanner scanner : SCANNERS) {
                 for (String productURL : scanner.productsURLs) {
                     Product product = scanner
@@ -32,18 +29,16 @@ public class AlgorithmExecutor {
 
                     if(product != null){
                         product.url = productURL;
-                        product.lastScanDate = lastScan;
                         DataAccess.saveOrUpdateProductData(product);
-                    }
-                    else {
-                        Logger.log(AlgorithmExecutor.class.getName(), "Product's data was not extracted -> " + productURL, Logger.LogLevel.WARN);
+                    } else {
+                        Logger.log(AlgorithmExecutor.class.getName(), "Product's data was not extracted -> " + scanner.shopName + " -> " + productURL, Logger.LogLevel.WARN);
                     }
                 }
                 scanner.productsURLs = new ArrayList<>();
             }
             Logger.log(AlgorithmExecutor.class.getName(), "Algorithm finished scanning webpages for products' data", Logger.LogLevel.INFO);
             LOCK = false;
-        }else{
+        } else {
             Logger.log(AlgorithmExecutor.class.getName(), "Other action is being executed", Logger.LogLevel.WARN);
         }
     }
@@ -57,7 +52,7 @@ public class AlgorithmExecutor {
             }
             Logger.log(AlgorithmExecutor.class.getName(), "Algorithm finished scanning webpages for products", Logger.LogLevel.INFO);
             LOCK = false;
-        }else{
+        } else {
             Logger.log(AlgorithmExecutor.class.getName(), "Other action is being executed", Logger.LogLevel.WARN);
         }
     }

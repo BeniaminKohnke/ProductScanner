@@ -5,11 +5,14 @@ import java.util.ArrayList;
 public class Logger {
     private static ArrayList<String> loggerQueue = new ArrayList<>();
 
-    public enum LogLevel{
+    public enum LogLevel {
         NONE, INFO, WARN, ERROR,
     }
 
     public static void log(String callerName, String message, LogLevel level){
+        if(!level.equals(LogLevel.NONE)){
+            DataAccess.saveLog(callerName, message, level);
+        }
         loggerQueue.add(level.name() + " -> " + callerName + " -> " + message);
     }
 
