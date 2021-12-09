@@ -6,25 +6,15 @@ public class Logger {
     private static ArrayList<String> loggerQueue = new ArrayList<>();
 
     public enum LogLevel {
-        NONE, INFO, WARN, ERROR,
+        _INFO, _WARN, _ERROR, INFO, WARN, ERROR,
     }
 
     public static void log(String callerName, String message, LogLevel level){
-        if(!level.equals(LogLevel.NONE)){
+        //logs with "_" level will not be stored in database
+        if(!level.toString().contains("_")){
             DataAccess.saveLog(callerName, message, level);
         }
         loggerQueue.add(level.name() + " -> " + callerName + " -> " + message);
-    }
-
-    public static String getSingleMessage(){
-        String message = null;
-        if(!loggerQueue.isEmpty()){
-            synchronized (loggerQueue){
-                message = loggerQueue.get(0);
-                loggerQueue.remove(0);
-            }
-        }
-        return message;
     }
 
     public static ArrayList<String> getEveryMessage(){

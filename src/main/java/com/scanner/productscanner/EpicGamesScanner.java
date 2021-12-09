@@ -84,11 +84,11 @@ public class EpicGamesScanner extends Scanner{
                 if(url != null) {
                     url = "https://www.epicgames.com" + url;
                     productsURLs.add(url);
-                    Logger.log(getClass().getName(), "New url -> " + shopName + " -> " + url, Logger.LogLevel.NONE);
+                    Logger.log(getClass().getName(), "New url -> " + shopName + " -> " + url, Logger.LogLevel._INFO);
                 }
             }
         } else {
-            Logger.log(getClass().getName(), "Could not download document", Logger.LogLevel.WARN);
+            Logger.log(getClass().getName(), "Algorithm could not download document", Logger.LogLevel.WARN);
         }
     }
 }

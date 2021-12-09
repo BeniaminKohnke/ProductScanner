@@ -1,8 +1,6 @@
 package com.scanner.productscanner;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class AlgorithmExecutor {
     private static final ArrayList<Scanner> SCANNERS = new ArrayList<>();
@@ -52,7 +50,7 @@ public class AlgorithmExecutor {
             Logger.log(AlgorithmExecutor.class.getName(), "Algorithm finished scanning webpages for products' data", Logger.LogLevel.INFO);
             LOCK = false;
         } else {
-            Logger.log(AlgorithmExecutor.class.getName(), "Other action is being executed", Logger.LogLevel.WARN);
+            Logger.log(AlgorithmExecutor.class.getName(), "Other action is being executed", Logger.LogLevel._WARN);
         }
     }
 
