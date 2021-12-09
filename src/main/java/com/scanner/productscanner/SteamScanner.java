@@ -80,10 +80,10 @@ public class SteamScanner extends Scanner {
         if(document != null){
             productsURLs = (ArrayList<String>) urlXPath.evaluate(document).list();
             for (String url : productsURLs) {
-                Logger.log(getClass().getName(), "New url -> " + shopName + " -> " + url, Logger.LogLevel.NONE);
+                Logger.log(getClass().getName(), "New url -> " + shopName + " -> " + url, Logger.LogLevel._INFO);
             }
         } else {
-            Logger.log(getClass().getName(), "Could not download document", Logger.LogLevel.WARN);
+            Logger.log(getClass().getName(), "Algorithm could not download document", Logger.LogLevel.WARN);
         }
     }
 }

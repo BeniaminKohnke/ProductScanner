@@ -17,6 +17,22 @@ public class DataAccess {
         existingURLs = new HashMap<>();
         existingURLs.put("steam", new ArrayList<>());
         existingURLs.put("epicGames", new ArrayList<>());
+
+        Connection sqlConnection = null;
+        try {
+            sqlConnection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=SCANNER;", "sa", "JAVA123");
+        } catch (SQLException e) {
+            Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
+        } finally {
+            if(sqlConnection != null){
+                Logger.log(DataAccess.class.getName(), "Initial connection was performed", Logger.LogLevel._INFO);
+                try {
+                    sqlConnection.close();
+                } catch (SQLException e) {
+                    Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
+                }
+            }
+        }
     }
 
     public static void getExistingProducts(){
@@ -24,7 +40,7 @@ public class DataAccess {
         try {
             sqlConnection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=SCANNER;", "sa", "JAVA123");
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
         }
         if (sqlConnection != null) {
             String sql = "SELECT url FROM [SCANNER].[dbo].[steam];";
@@ -35,8 +51,9 @@ public class DataAccess {
                     existingURLs.get("steam").add(response.getString("url"));
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
             }
+
             sql = "SELECT url FROM [SCANNER].[dbo].[epicGames];";
             try {
                 Statement query = sqlConnection.createStatement();
@@ -45,16 +62,16 @@ public class DataAccess {
                     existingURLs.get("epicGames").add(response.getString("url"));
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
             } finally {
                 try {
                     sqlConnection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
                 }
             }
         } else {
-            Logger.log(DataAccess.class.getName(), "Algorithm could not connect to database", Logger.LogLevel.NONE);
+            Logger.log(DataAccess.class.getName(), "Algorithm could not connect to database", Logger.LogLevel._WARN);
         }
     }
 
@@ -88,7 +105,7 @@ public class DataAccess {
                             product.languages.replace('\'',' '),
                             product.description.replace('\'',' ')) + ");";
                     sqlConnection.createStatement().execute(sql);
-                    Logger.log(AlgorithmExecutor.class.getName(), "New product -> " + product.shopName + " -> " + product.name, Logger.LogLevel.NONE);
+                    Logger.log(AlgorithmExecutor.class.getName(), "New product -> " + product.shopName + " -> " + product.name, Logger.LogLevel._INFO);
                 } else {
                     sql = "UPDATE [SCANNER].[dbo].[" + product.shopName + "] SET "
                             + String.format("name = '%s', imageUrl = '%s', lastScan = %s, mainPrice = '%s', discountPrice = '%s', languages = '%s', description = '%s'",
@@ -101,7 +118,7 @@ public class DataAccess {
                             product.description.replace('\'',' '))
                             + "WHERE url LIKE '" + product.url + "';";
                     sqlConnection.createStatement().execute(sql);
-                    Logger.log(AlgorithmExecutor.class.getName(), "Updated product -> " + product.shopName + " -> " + product.name, Logger.LogLevel.NONE);
+                    Logger.log(AlgorithmExecutor.class.getName(), "Updated product -> " + product.shopName + " -> " + product.name, Logger.LogLevel._INFO);
                 }
             } catch (SQLException e) {
                 Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel.ERROR);
@@ -109,11 +126,11 @@ public class DataAccess {
                 try {
                     sqlConnection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
                 }
             }
         } else {
-            Logger.log(DataAccess.class.getName(), "Cannot connect to database", Logger.LogLevel.NONE);
+            Logger.log(DataAccess.class.getName(), "Algorithm could not connect to database", Logger.LogLevel._WARN);
         }
     }
 
@@ -122,7 +139,7 @@ public class DataAccess {
         try {
             sqlConnection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=SCANNER;", "sa", "JAVA123");
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
         }
         if (sqlConnection != null) {
             String sql = "INSERT INTO [SCANNER].[dbo].[logger] (caller, message, logLevel, date) VALUES ("
@@ -130,16 +147,16 @@ public class DataAccess {
             try {
                 sqlConnection.createStatement().execute(sql);
             } catch (SQLException e) {
-                Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel.NONE);
+                Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
             } finally {
                 try {
                     sqlConnection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    Logger.log(DataAccess.class.getName(), e.getMessage(), Logger.LogLevel._ERROR);
                 }
             }
         } else {
-            Logger.log(DataAccess.class.getName(), "Cannot connect to database", Logger.LogLevel.NONE);
+            Logger.log(DataAccess.class.getName(), "Algorithm could not connect to database", Logger.LogLevel._WARN);
         }
     }
 
