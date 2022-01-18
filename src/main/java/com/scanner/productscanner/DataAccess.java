@@ -35,6 +35,9 @@ public class DataAccess {
         }
     }
 
+    /**
+     * Method adds existing URLs from each table into existingURLs hash map
+     */
     public static void getExistingProducts(){
         Connection sqlConnection = null;
         try {
@@ -75,6 +78,9 @@ public class DataAccess {
         }
     }
 
+    /**
+     * Method saves or updates "product" if already exists into database
+     */
     public static void saveOrUpdateProductData(Product product){
         Connection sqlConnection = null;
         try {
@@ -92,7 +98,6 @@ public class DataAccess {
                         break;
                     }
                 }
-
                 if(!containsUrl){
                     sql = "INSERT INTO [SCANNER].[dbo].[" + product.shopName + "] (name, url, imageUrl, lastScan, mainPrice, discountPrice, languages, description) VALUES ("
                             + String.format("'%s', '%s', '%s', %s, '%s', '%s', '%s', '%s'",
@@ -134,6 +139,9 @@ public class DataAccess {
         }
     }
 
+    /**
+     * Method saves logs into database
+     */
     public static void saveLog(String callerName, String message, Logger.LogLevel level) {
         Connection sqlConnection = null;
         try {
@@ -160,6 +168,9 @@ public class DataAccess {
         }
     }
 
+    /**
+     * Method downloads website content from "url" address. Returns null if cannot extract data.
+     */
     public static Document downloadHTMLDocument(String url) {
         Document document = null;
         try {
@@ -174,7 +185,4 @@ public class DataAccess {
         }
         return document;
     }
-
-
-
 }
