@@ -12,6 +12,9 @@ public class AlgorithmExecutor {
         LOCK = false;
     }
 
+    /**
+     * Executing scraping algorithms which inherits from Scanner class.
+     */
     public static void scan(){
         if(!LOCK){
             LOCK = true;
@@ -54,6 +57,9 @@ public class AlgorithmExecutor {
         }
     }
 
+    /**
+     * Executing crawling algorithms which inherits from Scanner class.
+     */
     public static void searchForProducts(){
         if(!LOCK) {
             LOCK = true;
